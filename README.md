@@ -36,7 +36,7 @@ The **Dynamic Event Calendar Application** is a responsive web application that 
   - [Vite](https://vitejs.dev/) for fast development and build processes.
   - [React.js](https://reactjs.org/) for building the user interface.
   - [ShadCN UI](https://shadcn.dev/) for styling components.
-- **Backend (if applicable)**: Placeholder for API integrations if planned.
+
 
 ---
 
@@ -52,7 +52,7 @@ The **Dynamic Event Calendar Application** is a responsive web application that 
 1. Clone the repository:
 
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/Prateek195jain/Dynamic-event-calendar.git
    ```
 
 2. Navigate to the project directory:
