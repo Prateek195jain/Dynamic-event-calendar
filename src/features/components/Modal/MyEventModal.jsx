@@ -17,7 +17,12 @@ const MyEventModal = ({ selectedDate, events, onClose, onSaveEvents }) => {
   });
   const [eventList, setEventList] = useState(events);
   const [searchKeyword, setSearchKeyword] = useState("");
-  const [editingIndex, setEditingIndex] = useState(null); // Tracks the event being edited
+  const [editingIndex, setEditingIndex] = useState(null);
+  const [errors, setErrors] = useState({
+    description: "",
+    startTime: "",
+    endTime: "",
+  });
 
   useEffect(() => {
     setEventList(events);
@@ -26,7 +31,7 @@ const MyEventModal = ({ selectedDate, events, onClose, onSaveEvents }) => {
   // Check for overlapping events
   const isOverlapping = (newEvent, excludeIndex = null) => {
     return eventList.some((event, index) => {
-      if (excludeIndex !== null && index === excludeIndex) return false; // Skip the current event during editing
+      if (excludeIndex !== null && index === excludeIndex) return false;
 
       const existingStart = new Date(`1970-01-01T${event.startTime}`);
       const existingEnd = new Date(`1970-01-01T${event.endTime}`);
@@ -41,26 +46,45 @@ const MyEventModal = ({ selectedDate, events, onClose, onSaveEvents }) => {
     });
   };
 
-  const handleAddEvent = () => {
-    if (
-      !newEvent.description.trim() ||
-      !newEvent.startTime ||
-      !newEvent.endTime
-    ) {
-      alert("Please fill in all fields.");
-      return;
+  const validateForm = () => {
+    let formErrors = {};
+    let isValid = true;
+
+    if (!newEvent.description.trim()) {
+      formErrors.description = "Description is required.";
+      isValid = false;
     }
+
+    if (!newEvent.startTime) {
+      formErrors.startTime = "Start time is required.";
+      isValid = false;
+    }
+
+    if (!newEvent.endTime) {
+      formErrors.endTime = "End time is required.";
+      isValid = false;
+    }
+
     if (
       new Date(`1970-01-01T${newEvent.startTime}`) >=
       new Date(`1970-01-01T${newEvent.endTime}`)
     ) {
-      alert("End time must be after start time.");
-      return;
+      formErrors.endTime = "End time must be after start time.";
+      isValid = false;
     }
+
     if (isOverlapping(newEvent)) {
-      alert("This event overlaps with an existing event.");
-      return;
+      formErrors.startTime = "This event overlaps with an existing event.";
+      formErrors.endTime = "This event overlaps with an existing event.";
+      isValid = false;
     }
+
+    setErrors(formErrors);
+    return isValid;
+  };
+
+  const handleAddEvent = () => {
+    if (!validateForm()) return;
 
     const updatedEvents = [...eventList, newEvent];
     setEventList(updatedEvents);
@@ -70,37 +94,18 @@ const MyEventModal = ({ selectedDate, events, onClose, onSaveEvents }) => {
 
   const handleEditEvent = (index) => {
     const eventToEdit = eventList[index];
-    setNewEvent(eventToEdit); // Populate the form with the selected event's data
-    setEditingIndex(index); // Set the index of the event being edited
+    setNewEvent(eventToEdit);
+    setEditingIndex(index);
   };
 
   const handleSaveEdit = () => {
-    if (
-      !newEvent.description.trim() ||
-      !newEvent.startTime ||
-      !newEvent.endTime
-    ) {
-      alert("Please fill in all fields.");
-      return;
-    }
-    if (
-      new Date(`1970-01-01T${newEvent.startTime}`) >=
-      new Date(`1970-01-01T${newEvent.endTime}`)
-    ) {
-      alert("End time must be after start time.");
-      return;
-    }
-    if (isOverlapping(newEvent, editingIndex)) {
-      alert("This event overlaps with an existing event.");
-      return;
-    }
+    if (!validateForm()) return;
 
     const updatedEvents = [...eventList];
     updatedEvents[editingIndex] = newEvent;
     setEventList(updatedEvents);
     onSaveEvents(updatedEvents);
 
-    // Reset form and editing state
     setNewEvent({ description: "", startTime: "", endTime: "" });
     setEditingIndex(null);
   };
@@ -145,6 +150,7 @@ const MyEventModal = ({ selectedDate, events, onClose, onSaveEvents }) => {
               editingIndex !== null ? handleSaveEdit : handleAddEvent
             }
             isEditing={editingIndex !== null}
+            errors={errors} // Pass errors to EventForm
           />
         </div>
         <DialogFooter>

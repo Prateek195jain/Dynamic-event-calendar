@@ -62,7 +62,7 @@ const DaysGrid = ({
         return (
           <div
             key={idx}
-            className={`p-4 border rounded text-center cursor-pointer
+            className={`flex items-center justify-center p-4 border rounded text-center cursor-pointer
               ${
                 day
                   ? isDaySelected
