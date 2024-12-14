@@ -117,7 +117,9 @@ const CalendarComponent = () => {
         currentDate={currentDate}
         events={events}
         handleDayClick={handleDayClick}
+        selectedDate={selectedDate}
       />
+
       {openModal && (
         <MyEventModal
           selectedDate={selectedDate}

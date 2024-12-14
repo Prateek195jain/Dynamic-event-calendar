@@ -17,14 +17,17 @@ const MyEventModal = ({ selectedDate, events, onClose, onSaveEvents }) => {
   });
   const [eventList, setEventList] = useState(events);
   const [searchKeyword, setSearchKeyword] = useState("");
+  const [editingIndex, setEditingIndex] = useState(null); // Tracks the event being edited
 
   useEffect(() => {
     setEventList(events);
   }, [events]);
 
   // Check for overlapping events
-  const isOverlapping = (newEvent) => {
-    return eventList.some((event) => {
+  const isOverlapping = (newEvent, excludeIndex = null) => {
+    return eventList.some((event, index) => {
+      if (excludeIndex !== null && index === excludeIndex) return false; // Skip the current event during editing
+
       const existingStart = new Date(`1970-01-01T${event.startTime}`);
       const existingEnd = new Date(`1970-01-01T${event.endTime}`);
       const newStart = new Date(`1970-01-01T${newEvent.startTime}`);
@@ -65,16 +68,41 @@ const MyEventModal = ({ selectedDate, events, onClose, onSaveEvents }) => {
     onSaveEvents(updatedEvents);
   };
 
-  const handleEditEvent = (index, updatedEvent) => {
-    if (isOverlapping(updatedEvent)) {
+  const handleEditEvent = (index) => {
+    const eventToEdit = eventList[index];
+    setNewEvent(eventToEdit); // Populate the form with the selected event's data
+    setEditingIndex(index); // Set the index of the event being edited
+  };
+
+  const handleSaveEdit = () => {
+    if (
+      !newEvent.description.trim() ||
+      !newEvent.startTime ||
+      !newEvent.endTime
+    ) {
+      alert("Please fill in all fields.");
+      return;
+    }
+    if (
+      new Date(`1970-01-01T${newEvent.startTime}`) >=
+      new Date(`1970-01-01T${newEvent.endTime}`)
+    ) {
+      alert("End time must be after start time.");
+      return;
+    }
+    if (isOverlapping(newEvent, editingIndex)) {
       alert("This event overlaps with an existing event.");
       return;
     }
 
     const updatedEvents = [...eventList];
-    updatedEvents[index] = updatedEvent;
+    updatedEvents[editingIndex] = newEvent;
     setEventList(updatedEvents);
     onSaveEvents(updatedEvents);
+
+    // Reset form and editing state
+    setNewEvent({ description: "", startTime: "", endTime: "" });
+    setEditingIndex(null);
   };
 
   const handleDeleteEvent = (index) => {
@@ -113,7 +141,10 @@ const MyEventModal = ({ selectedDate, events, onClose, onSaveEvents }) => {
           <EventForm
             newEvent={newEvent}
             setNewEvent={setNewEvent}
-            handleAddEvent={handleAddEvent}
+            handleAddEvent={
+              editingIndex !== null ? handleSaveEdit : handleAddEvent
+            }
+            isEditing={editingIndex !== null}
           />
         </div>
         <DialogFooter>
