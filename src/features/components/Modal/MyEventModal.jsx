@@ -66,6 +66,8 @@ const MyEventModal = ({ selectedDate, events, onClose, onSaveEvents }) => {
     setEventList(updatedEvents);
     setNewEvent({ description: "", startTime: "", endTime: "" });
     onSaveEvents(updatedEvents);
+
+    alert("Event added");
   };
 
   const handleEditEvent = (index) => {
