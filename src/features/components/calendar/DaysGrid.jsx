@@ -7,14 +7,12 @@ const DaysGrid = ({
   handleDayClick,
   selectedDate,
 }) => {
-  // Utility function to format a date as "yyyy-MM-dd"
   const formatDateKey = (year, month, day) => {
-    const formattedMonth = String(month + 1).padStart(2, "0"); // Ensure 2-digit month
-    const formattedDay = String(day).padStart(2, "0"); // Ensure 2-digit day
+    const formattedMonth = String(month + 1).padStart(2, "0");
+    const formattedDay = String(day).padStart(2, "0");
     return `${year}-${formattedMonth}-${formattedDay}`;
   };
 
-  // Get today's date for highlighting
   const today = new Date();
   const isToday = (day) => {
     return (
@@ -25,12 +23,10 @@ const DaysGrid = ({
     );
   };
 
-  // Check if a day is a weekend (Saturday or Sunday)
   const isWeekend = (index) => {
-    return index % 7 === 5 || index % 7 === 6; // Saturday and Sunday
+    return index % 7 === 5 || index % 7 === 6;
   };
 
-  // Check if a day is the selected day
   const isSelected = (day) => {
     if (!day || !selectedDate) return false;
     const dateKey = formatDateKey(
@@ -42,7 +38,7 @@ const DaysGrid = ({
   };
 
   return (
-    <div className="grid grid-cols-7 gap-2">
+    <div className="grid grid-cols-7 gap-2 h-[400px]">
       {days.map((day, idx) => {
         const dateKey = day
           ? formatDateKey(
@@ -54,7 +50,6 @@ const DaysGrid = ({
 
         const hasEvent = day && events[dateKey]?.length > 0;
 
-        // Determine the styles based on the conditions
         const isDayToday = isToday(day);
         const isDaySelected = isSelected(day);
         const isDayWeekend = isWeekend(idx);

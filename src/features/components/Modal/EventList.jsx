@@ -36,7 +36,6 @@ const EventList = ({ eventList, handleEditEvent, handleDeleteEvent }) => {
         )}
       </ul>
 
-      {/* Delete Confirmation Modal */}
       <DeleteConfirmationModal
         isOpen={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}

@@ -42,21 +42,16 @@ const CalendarComponent = () => {
       const year = currentDate.getFullYear();
       const month = currentDate.getMonth();
 
-      // Get first day of the month
       const firstDayOfMonth = new Date(year, month, 1).getDay();
 
-      // Get total days in the month
       const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-      // Adjust the first day to make the week start on Monday
       const adjustedFirstDay = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
 
-      // Add blank days for padding
       for (let i = 0; i < adjustedFirstDay; i++) {
         daysArr.push(null);
       }
 
-      // Add days of the month
       for (let i = 1; i <= daysInMonth; i++) {
         daysArr.push(i);
       }

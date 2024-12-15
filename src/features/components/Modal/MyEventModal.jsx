@@ -17,7 +17,7 @@ const MyEventModal = ({ selectedDate, events, onClose, onSaveEvents }) => {
   });
   const [eventList, setEventList] = useState(events);
   const [searchKeyword, setSearchKeyword] = useState("");
-  const [editingIndex, setEditingIndex] = useState(null); // Tracks the event being edited
+  const [editingIndex, setEditingIndex] = useState(null);
 
   useEffect(() => {
     setEventList(events);
@@ -26,7 +26,7 @@ const MyEventModal = ({ selectedDate, events, onClose, onSaveEvents }) => {
   // Check for overlapping events
   const isOverlapping = (newEvent, excludeIndex = null) => {
     return eventList.some((event, index) => {
-      if (excludeIndex !== null && index === excludeIndex) return false; // Skip the current event during editing
+      if (excludeIndex !== null && index === excludeIndex) return false;
 
       const existingStart = new Date(`1970-01-01T${event.startTime}`);
       const existingEnd = new Date(`1970-01-01T${event.endTime}`);
@@ -70,8 +70,8 @@ const MyEventModal = ({ selectedDate, events, onClose, onSaveEvents }) => {
 
   const handleEditEvent = (index) => {
     const eventToEdit = eventList[index];
-    setNewEvent(eventToEdit); // Populate the form with the selected event's data
-    setEditingIndex(index); // Set the index of the event being edited
+    setNewEvent(eventToEdit);
+    setEditingIndex(index);
   };
 
   const handleSaveEdit = () => {
@@ -100,7 +100,6 @@ const MyEventModal = ({ selectedDate, events, onClose, onSaveEvents }) => {
     setEventList(updatedEvents);
     onSaveEvents(updatedEvents);
 
-    // Reset form and editing state
     setNewEvent({ description: "", startTime: "", endTime: "" });
     setEditingIndex(null);
   };
